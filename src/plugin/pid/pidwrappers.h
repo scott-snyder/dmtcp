@@ -79,6 +79,10 @@ struct user_desc {int dummy;}; /* <asm/ldt.h> is missing in Ubuntu 14.04 */
 
 #include "dmtcp.h"
 
+#ifndef __WAIT_STATUS
+#  define __WAIT_STATUS         int *
+#endif
+
 // Keep in sync with dmtcp/src/constants.h
 #define ENV_VAR_VIRTUAL_PID "DMTCP_VIRTUAL_PID"
 

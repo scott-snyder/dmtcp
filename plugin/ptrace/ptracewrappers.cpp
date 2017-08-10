@@ -500,7 +500,7 @@ extern "C" pid_t waitpid(pid_t pid, int *stat, int options)
   return wait4(pid, stat, options, NULL);
 }
 
-extern "C" pid_t wait4(pid_t pid, void *stat, int options,
+extern "C" pid_t wait4(pid_t pid, int *stat, int options,
                        struct rusage *rusage)
 {
   int status;

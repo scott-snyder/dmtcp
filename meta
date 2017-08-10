@@ -1,6 +1,7 @@
 Version: 1
-Previous: None
-Head: 56aa148ebdaa33ca67ed3bc4a60422c6aa50e03f
+Previous: 54b11597c857f4cd680e6f68e2af33f1179710c7
+Head: e638f75bb739b31d836253f9fa160208e680a916
 Applied:
+  fedora26-patches: e638f75bb739b31d836253f9fa160208e680a916
 Unapplied:
 Hidden:

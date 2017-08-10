@@ -1,0 +1,11 @@
+Bottom: ee8c6b36a4261accd1aa6dba4e89ca88a8533d51
+Top:    ee8c6b36a4261accd1aa6dba4e89ca88a8533d51
+Author: scott snyder <sss@karma>
+Date:   2017-08-10 10:37:57 -0400
+
+Fixes to compile on fedora 26.
+
+
+---
+
+

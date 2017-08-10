@@ -88,6 +88,10 @@
 # endif
 #endif
 
+#ifndef __WAIT_STATUS
+#  define __WAIT_STATUS         int *
+#endif
+
 void _dmtcp_setup_trampolines();
 
 #ifdef __cplusplus

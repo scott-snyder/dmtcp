@@ -1,0 +1,52 @@
+Bottom: ee8c6b36a4261accd1aa6dba4e89ca88a8533d51
+Top:    9d87155015a80ef3da47a32dc513a9762cd224d6
+Author: scott snyder <sss@karma>
+Date:   2017-08-10 10:38:08 -0400
+
+Refresh of fedora26-patches
+
+---
+
+diff --git a/plugin/ptrace/ptracewrappers.cpp b/plugin/ptrace/ptracewrappers.cpp
+index 2be2d213..079c6e98 100644
+--- a/plugin/ptrace/ptracewrappers.cpp
++++ b/plugin/ptrace/ptracewrappers.cpp
+@@ -500,7 +500,7 @@ extern "C" pid_t waitpid(pid_t pid, int *stat, int options)
+   return wait4(pid, stat, options, NULL);
+ }
+ 
+-extern "C" pid_t wait4(pid_t pid, void *stat, int options,
++extern "C" pid_t wait4(pid_t pid, int *stat, int options,
+                        struct rusage *rusage)
+ {
+   int status;
+diff --git a/src/plugin/pid/pidwrappers.h b/src/plugin/pid/pidwrappers.h
+index 89b0c9e1..462b201d 100644
+--- a/src/plugin/pid/pidwrappers.h
++++ b/src/plugin/pid/pidwrappers.h
+@@ -79,6 +79,10 @@ struct user_desc {int dummy;}; /* <asm/ldt.h> is missing in Ubuntu 14.04 */
+ 
+ #include "dmtcp.h"
+ 
++#ifndef __WAIT_STATUS
++#  define __WAIT_STATUS         int *
++#endif
++
+ // Keep in sync with dmtcp/src/constants.h
+ #define ENV_VAR_VIRTUAL_PID "DMTCP_VIRTUAL_PID"
+ 
+diff --git a/src/syscallwrappers.h b/src/syscallwrappers.h
+index 05498098..0f472867 100644
+--- a/src/syscallwrappers.h
++++ b/src/syscallwrappers.h
+@@ -88,6 +88,10 @@
+ # endif
+ #endif
+ 
++#ifndef __WAIT_STATUS
++#  define __WAIT_STATUS         int *
++#endif
++
+ void _dmtcp_setup_trampolines();
+ 
+ #ifdef __cplusplus

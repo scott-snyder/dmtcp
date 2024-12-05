@@ -81,6 +81,7 @@ void mtcp_check_vdso(char **environ);
  * copy the global data into the new call frame.
  */
 typedef void (*fnptr_t)();
+typedef void (*fnvpptr_t)(void*);
 #define STACKSIZE 4*1024*1024
   //static long long tempstack[STACKSIZE];
 typedef struct RestoreInfo {
@@ -98,7 +99,7 @@ typedef struct RestoreInfo {
   VA vvarStart;
   VA vvarEnd;
   fnptr_t post_restart;
-  fnptr_t restorememoryareas_fptr;
+  fnvpptr_t restorememoryareas_fptr;
   //void (*post_restart)();
   //void (*restorememoryareas_fptr)();
   int use_gdb;
@@ -383,7 +384,7 @@ static void restart_fast_path()
   }
 
   size_t offset = (char*)&restorememoryareas - rinfo.text_addr;
-  rinfo.restorememoryareas_fptr = (fnptr_t)(rinfo.restore_addr + offset);
+  rinfo.restorememoryareas_fptr = (fnvpptr_t)(rinfo.restore_addr + offset);
 /* For __arm__
  *    should be able to use kernel call: __ARM_NR_cacheflush(start, end, flag)
  *    followed by copying new text below, followed by DSB and ISB,

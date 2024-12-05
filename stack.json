@@ -1,0 +1,19 @@
+{
+  "version": 5,
+  "prev": "fb6cc35b4ee42c680e2b58daa2f8c88387ec4092",
+  "head": "a895281c0aa08b3e47e8aad6956b90eec030f4ee",
+  "applied": [
+    "fedora26-patches",
+    "gcc15"
+  ],
+  "unapplied": [],
+  "hidden": [],
+  "patches": {
+    "fedora26-patches": {
+      "oid": "f7ff8a926d2c8cb6905ee3b8ee46e6507b7546ee"
+    },
+    "gcc15": {
+      "oid": "a895281c0aa08b3e47e8aad6956b90eec030f4ee"
+    }
+  }
+}

@@ -102,18 +102,28 @@ pid_initialize_wrappers()
 
 #define REAL_FUNC_PASSTHROUGH(name) REAL_FUNC_PASSTHROUGH_TYPED(int, name)
 
-#define REAL_FUNC_PASSTHROUGH_TYPED(type, name) \
-  static type (*fn)() = NULL;                   \
-  REAL_FUNC_PASSTHROUGH_WORK(name)              \
+#define REAL_FUNC_PASSTHROUGH_ARG(ARG,name)  REAL_FUNC_PASSTHROUGH_TYPED_ARG(ARG,int, name)
+
+#define REAL_FUNC_PASSTHROUGH_TYPED(type,name) \
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG(const void*,type,name)
+
+#define REAL_FUNC_PASSTHROUGH_TYPED_ARG(ARG,type,name)  \
+  static type (*fn)(ARG, ...) = NULL;                    \
+  REAL_FUNC_PASSTHROUGH_WORK(name)             \
+  return (*fn)
+
+#define REAL_FUNC_PASSTHROUGH_TYPED_NOARG(type,name)  \
+  static type (*fn)() = NULL;                    \
+  REAL_FUNC_PASSTHROUGH_WORK(name)             \
   return (*fn)
 
 #define REAL_FUNC_PASSTHROUGH_VOID(name) \
-  static void (*fn)() = NULL;            \
+  static void (*fn)(const void*,...) = NULL;    \
   REAL_FUNC_PASSTHROUGH_WORK(name)       \
   (*fn)
 
 #define REAL_FUNC_PASSTHROUGH_NORETURN(name)                \
-  static void (*fn)() __attribute__((__noreturn__)) = NULL; \
+  static void (*fn)(...) __attribute__((__noreturn__)) = NULL; \
   REAL_FUNC_PASSTHROUGH_WORK(name)                          \
   (*fn)
 
@@ -149,70 +159,70 @@ LIB_PRIVATE
 pid_t
 _real_tcgetsid(int fd)
 {
-  REAL_FUNC_PASSTHROUGH(tcgetsid) (fd);
+  REAL_FUNC_PASSTHROUGH_ARG ( int, tcgetsid ) ( fd );
 }
 
 LIB_PRIVATE
 int
 _real_tcsetpgrp(int fd, pid_t pgrp)
 {
-  REAL_FUNC_PASSTHROUGH(tcsetpgrp) (fd, pgrp);
+  REAL_FUNC_PASSTHROUGH_ARG ( int, tcsetpgrp ) ( fd, pgrp );
 }
 
 LIB_PRIVATE
 pid_t
 _real_tcgetpgrp(int fd)
 {
-  REAL_FUNC_PASSTHROUGH(tcgetpgrp) (fd);
+  REAL_FUNC_PASSTHROUGH_ARG ( int, tcgetpgrp ) ( fd );
 }
 
 LIB_PRIVATE
 pid_t
 _real_getpgrp(void)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, getpgrp) ();
+  REAL_FUNC_PASSTHROUGH_TYPED_NOARG ( pid_t, getpgrp ) ( );
 }
 
 LIB_PRIVATE
 pid_t
 _real_setpgrp(void)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, setpgrp) ();
+  REAL_FUNC_PASSTHROUGH_TYPED_NOARG ( pid_t, setpgrp ) ( );
 }
 
 LIB_PRIVATE
 pid_t
 _real_getpgid(pid_t pid)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, getpgid) (pid);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( pid_t, pid_t, getpgid ) ( pid );
 }
 
 LIB_PRIVATE
 int
 _real_setpgid(pid_t pid, pid_t pgid)
 {
-  REAL_FUNC_PASSTHROUGH(setpgid) (pid, pgid);
+  REAL_FUNC_PASSTHROUGH_ARG ( pid_t, setpgid ) ( pid, pgid );
 }
 
 LIB_PRIVATE
 pid_t
 _real_getsid(pid_t pid)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, getsid) (pid);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( pid_t, pid_t, getsid ) ( pid );
 }
 
 LIB_PRIVATE
 pid_t
 _real_setsid(void)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, setsid) ();
+  REAL_FUNC_PASSTHROUGH_TYPED_NOARG ( pid_t, setsid ) ( );
 }
 
 LIB_PRIVATE
 int
 _real_kill(pid_t pid, int sig)
 {
-  REAL_FUNC_PASSTHROUGH(kill) (pid, sig);
+  REAL_FUNC_PASSTHROUGH_ARG ( pid_t, kill ) ( pid, sig );
 }
 
 LIB_PRIVATE
@@ -226,28 +236,28 @@ LIB_PRIVATE
 pid_t
 _real_waitpid(pid_t pid, int *stat_loc, int options)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, waitpid) (pid, stat_loc, options);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( pid_t, pid_t, waitpid ) ( pid, stat_loc, options );
 }
 
 LIB_PRIVATE
 int
 _real_waitid(idtype_t idtype, id_t id, siginfo_t *infop, int options)
 {
-  REAL_FUNC_PASSTHROUGH(waitid) (idtype, id, infop, options);
+  REAL_FUNC_PASSTHROUGH_ARG ( idtype_t, waitid ) ( idtype, id, infop, options );
 }
 
 LIB_PRIVATE
 pid_t
 _real_wait3(__WAIT_STATUS status, int options, struct rusage *rusage)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, wait3) (status, options, rusage);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( __WAIT_STATUS, pid_t, wait3 ) ( status, options, rusage );
 }
 
 LIB_PRIVATE
 pid_t
 _real_wait4(pid_t pid, __WAIT_STATUS status, int options, struct rusage *rusage)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, wait4) (pid, status, options, rusage);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( pid_t, pid_t, wait4 ) ( pid, status, options, rusage );
 }
 
 LIB_PRIVATE
@@ -264,21 +274,21 @@ _real_ioctl(int d, unsigned long int request, ...)
   va_end(ap);
 
   ///usr/include/unistd.h says syscall returns long int (contrary to man page)
-  REAL_FUNC_PASSTHROUGH_TYPED(int, ioctl) (d, request, arg);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( int, int, ioctl ) ( d, request, arg );
 }
 
 LIB_PRIVATE
 int
 _real_setgid(gid_t gid)
 {
-  REAL_FUNC_PASSTHROUGH(setgid) (gid);
+  REAL_FUNC_PASSTHROUGH_ARG( gid_t, setgid ) (gid);
 }
 
 LIB_PRIVATE
 int
 _real_setuid(uid_t uid)
 {
-  REAL_FUNC_PASSTHROUGH(setuid) (uid);
+  REAL_FUNC_PASSTHROUGH_ARG( uid_t, setuid ) (uid);
 }
 
 // gettid / tkill / tgkill are not defined in libc.
@@ -324,7 +334,7 @@ _real_syscall(long sys_num, ...)
   va_end(ap);
 
   ///usr/include/unistd.h says syscall returns long int (contrary to man page)
-  REAL_FUNC_PASSTHROUGH_TYPED(long, syscall) (sys_num, arg[0], arg[1],
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( long, long, syscall ) (sys_num, arg[0], arg[1],
                                               arg[2], arg[3], arg[4],
                                               arg[5], arg[6]);
 }
@@ -333,14 +343,14 @@ LIB_PRIVATE
 pid_t
 _real_fork()
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, fork) ();
+  REAL_FUNC_PASSTHROUGH_TYPED_NOARG ( pid_t, fork ) ();
 }
 
 LIB_PRIVATE
 pid_t
 _real_vfork()
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(pid_t, vfork) ();
+  REAL_FUNC_PASSTHROUGH_TYPED_NOARG(pid_t, vfork) ();
 }
 
 LIB_PRIVATE
@@ -349,7 +359,7 @@ _real_clone(int (*function)(
               void *), void *child_stack, int flags, void *arg, int *parent_tidptr, struct user_desc *newtls,
             int *child_tidptr)
 {
-  REAL_FUNC_PASSTHROUGH(__clone) (function, child_stack, flags, arg,
+  REAL_FUNC_PASSTHROUGH_ARG(int (*)(void*), __clone) (function, child_stack, flags, arg,
                                   parent_tidptr, newtls, child_tidptr);
 }
 
@@ -357,28 +367,28 @@ LIB_PRIVATE
 int
 _real_shmget(key_t key, size_t size, int shmflg)
 {
-  REAL_FUNC_PASSTHROUGH(shmget) (key, size, shmflg);
+  REAL_FUNC_PASSTHROUGH_ARG ( key_t, shmget ) (key, size, shmflg);
 }
 
 LIB_PRIVATE
 void *
 _real_shmat(int shmid, const void *shmaddr, int shmflg)
 {
-  REAL_FUNC_PASSTHROUGH_TYPED(void *, shmat) (shmid, shmaddr, shmflg);
+  REAL_FUNC_PASSTHROUGH_TYPED_ARG ( int, void*, shmat ) (shmid, shmaddr, shmflg);
 }
 
 LIB_PRIVATE
 int
 _real_shmdt(const void *shmaddr)
 {
-  REAL_FUNC_PASSTHROUGH(shmdt) (shmaddr);
+  REAL_FUNC_PASSTHROUGH_ARG(const void*, shmdt) (shmaddr);
 }
 
 LIB_PRIVATE
 int
 _real_shmctl(int shmid, int cmd, struct shmid_ds *buf)
 {
-  REAL_FUNC_PASSTHROUGH(shmctl) (shmid, cmd, buf);
+  REAL_FUNC_PASSTHROUGH_ARG ( int, shmctl ) (shmid, cmd, buf);
 }
 
 LIB_PRIVATE
@@ -391,42 +401,42 @@ _real_semctl(int semid, int semnum, int cmd, ...)
   va_start(arg, cmd);
   uarg = va_arg(arg, union semun);
   va_end(arg);
-  REAL_FUNC_PASSTHROUGH(semctl) (semid, semnum, cmd, uarg);
+  REAL_FUNC_PASSTHROUGH_ARG ( int, semctl ) (semid, semnum, cmd, uarg);
 }
 
 LIB_PRIVATE
 int
 _real_msgctl(int msqid, int cmd, struct msqid_ds *buf)
 {
-  REAL_FUNC_PASSTHROUGH(msgctl) (msqid, cmd, buf);
+  REAL_FUNC_PASSTHROUGH_ARG (int, msgctl) (msqid, cmd, buf);
 }
 
 LIB_PRIVATE
 int
 _real_mq_notify(mqd_t mqdes, const struct sigevent *sevp)
 {
-  REAL_FUNC_PASSTHROUGH(mq_notify) (mqdes, sevp);
+  REAL_FUNC_PASSTHROUGH_ARG (mqd_t, mq_notify) (mqdes, sevp);
 }
 
 LIB_PRIVATE
 int
 _real_clock_getcpuclockid(pid_t pid, clockid_t *clock_id)
 {
-  REAL_FUNC_PASSTHROUGH(clock_getcpuclockid) (pid, clock_id);
+  REAL_FUNC_PASSTHROUGH_ARG (pid_t, clock_getcpuclockid) (pid, clock_id);
 }
 
 LIB_PRIVATE
 int
 _real_timer_create(clockid_t clockid, struct sigevent *sevp, timer_t *timerid)
 {
-  REAL_FUNC_PASSTHROUGH(timer_create) (clockid, sevp, timerid);
+  REAL_FUNC_PASSTHROUGH_ARG (clockid_t, timer_create) (clockid, sevp, timerid);
 }
 
 LIB_PRIVATE
 int
 _real_pthread_cancel(pthread_t th)
 {
-  REAL_FUNC_PASSTHROUGH(pthread_cancel) (th);
+  REAL_FUNC_PASSTHROUGH_ARG(pthread_t, pthread_cancel) (th);
 }
 
 LIB_PRIVATE
@@ -440,49 +450,49 @@ LIB_PRIVATE
 int
 _real_fcntl(int fd, int cmd, void *arg)
 {
-  REAL_FUNC_PASSTHROUGH(fcntl) (fd, cmd, arg);
+  REAL_FUNC_PASSTHROUGH_ARG (int, fcntl) (fd, cmd, arg);
 }
 
 LIB_PRIVATE
 int
 _real_sched_setaffinity(pid_t pid, size_t cpusetsize, const cpu_set_t *mask)
 {
-  REAL_FUNC_PASSTHROUGH(sched_setaffinity) (pid, cpusetsize, mask);
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t,sched_setaffinity) (pid, cpusetsize, mask);
 }
 
 LIB_PRIVATE
 int
 _real_sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)
 {
-  REAL_FUNC_PASSTHROUGH(sched_getaffinity) (pid, cpusetsize, mask);
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t,sched_getaffinity) (pid, cpusetsize, mask);
 }
 
 LIB_PRIVATE
 int
 _real_sched_setscheduler(pid_t pid, int policy, const struct sched_param *param)
 {
-  REAL_FUNC_PASSTHROUGH(sched_setscheduler) (pid, policy, param);
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t,sched_setscheduler) (pid, policy, param);
 }
 
 LIB_PRIVATE
 int
 _real_sched_getscheduler(pid_t pid)
 {
-  REAL_FUNC_PASSTHROUGH(sched_getscheduler) (pid);
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t,sched_getscheduler) (pid);
 }
 
 LIB_PRIVATE
 int
 _real_sched_setparam(pid_t pid, const struct sched_param *param)
 {
-  REAL_FUNC_PASSTHROUGH(sched_setparam) (pid);
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t,sched_setparam) (pid);
 }
 
 LIB_PRIVATE
 int
 _real_sched_getparam(pid_t pid, struct sched_param *param)
 {
-  REAL_FUNC_PASSTHROUGH(sched_getparam) (pid, param);
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t,sched_getparam) (pid, param);
 }
 
 #if 0
@@ -514,7 +524,7 @@ _real_process_vm_readv(pid_t pid,
                        unsigned long riovcnt,
                        unsigned long flags)
 {
-  REAL_FUNC_PASSTHROUGH(process_vm_readv) (pid, local_iov, liovcnt,
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t, process_vm_readv) (pid, local_iov, liovcnt,
                                            remote_iov, riovcnt, flags);
 }
 
@@ -526,7 +536,7 @@ _real_process_vm_writev(pid_t pid,
                         unsigned long riovcnt,
                         unsigned long flags)
 {
-  REAL_FUNC_PASSTHROUGH(process_vm_writev) (pid, local_iov, liovcnt,
+  REAL_FUNC_PASSTHROUGH_ARG(pid_t, process_vm_writev) (pid, local_iov, liovcnt,
                                             remote_iov, riovcnt, flags);
 }
 #endif /* if HAS_CMA */

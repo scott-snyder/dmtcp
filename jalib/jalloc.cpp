@@ -299,7 +299,7 @@ class JFixedAllocStack
     {
       StackHead origHead = {0};
       StackHead newHead = {0};
-      _numExpands++;
+      _numExpands += 1;
       FreeItem *bufs =
         static_cast<FreeItem *>(JAllocDispatcher::allocate(_blockSize));
       int count = _blockSize / sizeof(FreeItem);

@@ -61,3 +61,7 @@ am--include-marker
 *.tmp
 .vscode
 .idea/
+.ccls-cache
+conf*.file
+confdefs.h
+conf*

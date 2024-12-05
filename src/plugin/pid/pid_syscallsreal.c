@@ -99,17 +99,17 @@ void pid_initialize_wrappers()
 #define REAL_FUNC_PASSTHROUGH(name)  REAL_FUNC_PASSTHROUGH_TYPED(int, name)
 
 #define REAL_FUNC_PASSTHROUGH_TYPED(type,name) \
-  static type (*fn)() = NULL;                  \
+  static type (*fn)(...) = NULL;                  \
   REAL_FUNC_PASSTHROUGH_WORK(name)             \
   return (*fn)
 
 #define REAL_FUNC_PASSTHROUGH_VOID(name) \
-  static void (*fn)() = NULL;            \
+  static void (*fn)(...) = NULL;            \
   REAL_FUNC_PASSTHROUGH_WORK(name)       \
   (*fn)
 
 #define REAL_FUNC_PASSTHROUGH_NORETURN(name)                 \
-  static void (*fn)() __attribute__ ((__noreturn__)) = NULL; \
+  static void (*fn)(...) __attribute__ ((__noreturn__)) = NULL; \
   REAL_FUNC_PASSTHROUGH_WORK(name)                           \
   (*fn)
 

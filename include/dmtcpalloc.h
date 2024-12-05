@@ -222,7 +222,7 @@ template < typename T >
 class list: public std::list<T, DmtcpAlloc<T> > {};
 
 template < typename K, typename V >
-class map: public std::map<K, V, std::less<K>, DmtcpAlloc<std::pair<K, V> > > {};
+class map: public std::map<K, V, std::less<K>, DmtcpAlloc<std::pair<const K, V> > > {};
 
 template < typename K >
 class set: public std::set<K, std::less<K>, DmtcpAlloc<K> > {};

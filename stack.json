@@ -1,0 +1,15 @@
+{
+  "version": 5,
+  "prev": "None",
+  "head": "f7ff8a926d2c8cb6905ee3b8ee46e6507b7546ee",
+  "applied": [
+    "fedora26-patches"
+  ],
+  "unapplied": [],
+  "hidden": [],
+  "patches": {
+    "fedora26-patches": {
+      "oid": "f7ff8a926d2c8cb6905ee3b8ee46e6507b7546ee"
+    }
+  }
+}

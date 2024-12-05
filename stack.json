@@ -1,12 +1,11 @@
 {
   "version": 5,
-  "prev": "8991d639dbab3c45a323f071c9fa7963c21b0e4a",
-  "head": "7e25dbc3b7fe5d79c5ea726f9038fabf0d27fb11",
+  "prev": "5aeecada1a16d781d933f7a2c6b1e47d0b628936",
+  "head": "9fd59c657b8131184fb724fb725c766eab4dc2ef",
   "applied": [
     "fedora26-patches",
     "gcc15",
-    "gitignore",
-    "refresh-temp"
+    "gitignore"
   ],
   "unapplied": [],
   "hidden": [],
@@ -18,10 +17,7 @@
       "oid": "bd5844ae4a50c80e915d7b45ee94bca7a109d8a7"
     },
     "gitignore": {
-      "oid": "154e415462046d3f4e4c6b5015f27d619bf81108"
-    },
-    "refresh-temp": {
-      "oid": "7e25dbc3b7fe5d79c5ea726f9038fabf0d27fb11"
+      "oid": "9fd59c657b8131184fb724fb725c766eab4dc2ef"
     }
   }
 }

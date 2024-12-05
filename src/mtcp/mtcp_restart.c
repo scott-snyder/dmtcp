@@ -1134,9 +1134,9 @@ remapMtcpRestartToReservedArea(RestoreInfo *rinfo,
   int mtcp_sys_errno;
 
   ptrdiff_t restore_region_offset = (VA) rinfo->restore_addr - mem_regions[0].addr;
-  rinfo->restore_func = (fnptr_t)
+  rinfo->restore_func = (fnptr_ri_t)
     ((uint64_t)restore_func + restore_region_offset);
-  rinfo->mtcp_restart_new_stack = (fnptr_t)
+  rinfo->mtcp_restart_new_stack = (fnptr_ri_t)
     ((uint64_t)mtcp_restart_new_stack + restore_region_offset);
 
 

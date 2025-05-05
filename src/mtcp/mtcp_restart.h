@@ -84,7 +84,10 @@
    */                                                                         \
   rinfoPtr->restorememoryareas_fptr(rinfoPtr)
 
+struct RestoreInfo;
 typedef void (*fnptr_t)();
+typedef void (*fnptr_ri_t)(struct RestoreInfo*);
+typedef void (*fnptr_di_t)(double, int);
 
 #define MAX_REGIONS_TO_MUNMAP 16
 
@@ -110,11 +113,11 @@ typedef struct RestoreInfo {
   VA vvarVClockStart;
   VA vvarVClockEnd;
   VA endOfStack;
-  fnptr_t post_restart;
+  fnptr_di_t post_restart;
   // NOTE: Update the offset when adding fields to the RestoreInfo struct
   // See note below in the restart_fast_path() function.
-  fnptr_t restore_func;
-  fnptr_t mtcp_restart_new_stack;
+  fnptr_ri_t restore_func;
+  fnptr_ri_t mtcp_restart_new_stack;
 
   // VDSO/VVAR regions for the mtcp_restart program.
   VA currentVdsoStart;

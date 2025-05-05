@@ -376,7 +376,7 @@ jalib::Filesystem::GetControllingTerm(pid_t pid /* = -1*/)
   num_read = read(fd, sbuf, sizeof sbuf - 1);
   close(fd);
   if (num_read <= 0) {
-    return NULL;
+    return "";
   }
   sbuf[num_read] = '\0';
 

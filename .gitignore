@@ -63,3 +63,5 @@ am--include-marker
 .idea/
 .ccls-cache
 conf*.file
+confdefs.h
+conf*
